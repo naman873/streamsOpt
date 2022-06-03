@@ -62,9 +62,15 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () {
               streamClassData.dispose();
-              // streamController.close();
             },
             child: const Text("Dispose"),
+          ),
+          TextButton(
+            onPressed: () {
+              // streamClassData.dispose();
+              streamClassData.getWeatherData();
+            },
+            child: const Text("Get Weather"),
           )
         ],
       ),
@@ -82,13 +88,25 @@ class _HomePageState extends State<HomePage> {
           //     : const CircularProgressIndicator()
           StreamBuilder(
         stream: streamClassData.stream,
-        builder: (context, snapshot) {
-          return Text(snapshot.data.toString());
-          // print("snapshot");
-          // if (snapshot.hasData) {
-          //   return Text("${snapshot.data}");
-          // } else {
-          //   return const CircularProgressIndicator();
+        builder: (context, AsyncSnapshot snapshot) {
+          // return Center(child: Text(snapshot.data.toString(),),);
+          if (snapshot.connectionState == ConnectionState.active) {
+            print("snapshot");
+            if (snapshot.hasData) {
+              // return Text("${snapshot.data}");
+              return Center(
+                child: Text(
+                    "Temperature of ${snapshot.data[0]} is ${snapshot.data[1]}"),
+              );
+            } else {
+              return const Text(
+                "No Data :)",
+              );
+            }
+          } else {
+            const Center(child: CircularProgressIndicator());
+          }
+          return Container();
         },
       ),
     );
